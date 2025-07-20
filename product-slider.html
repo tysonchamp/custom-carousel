@@ -89,6 +89,28 @@
         /* Tomato color */
     }
 
+    .active-slide img,
+    .active-slide iframe {
+        opacity: 1;
+        /* Ensure the image is fully visible */
+    }
+
+    .slide.active-slide {
+        display: flex !important;
+        transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+    }
+    .slide.hide-slide {
+        display: none !important;
+    }
+    
+    .slide-animation {
+        animation: slideAnimation 0.5s ease-in-out;
+    }
+    
+    @keyframes slideAnimation {
+        0% { opacity: 0.7; transform: translateX(20px); }
+        100% { opacity: 1; transform: translateX(0); }
+    }
     /* Responsive Design */
     @media (max-width: 768px) {
         .product-slider-container {
@@ -119,7 +141,7 @@
             <div class="product-slider" id="productSlider">
                 <!-- Slide 1: Image -->
                 <div class="slide active-slide">
-                    <img src="image1.jpg" alt="Product Image 1">
+                    <img src="1.jpg" alt="Product Image 1">
                     <div class="overlay">
                         <h2>Product Title 1</h2>
                         <p>Description of Product 1</p>
@@ -127,7 +149,7 @@
                 </div>
                 <!-- Slide 2: YouTube Video -->
                 <div class="slide">
-                    <iframe src="https://www.youtube.com/embed/VIDEO_ID_1" frameborder="0" allowfullscreen></iframe>
+                    <iframe src="https://www.youtube.com/embed/qZgjVAHpVMc" frameborder="0" allowfullscreen></iframe>
                     <div class="overlay">
                         <h2>Product Title 2</h2>
                         <p>Description of Product 2</p>
@@ -135,7 +157,7 @@
                 </div>
                 <!-- Slide 3: Image -->
                 <div class="slide">
-                    <img src="image2.jpg" alt="Product Image 2">
+                    <img src="3.jpg" alt="Product Image 2">
                     <div class="overlay">
                         <h2>Product Title 3</h2>
                         <p>Description of Product 3</p>
@@ -143,7 +165,7 @@
                 </div>
                 <!-- Slide 4: YouTube Video -->
                 <div class="slide">
-                    <iframe src="https://www.youtube.com/embed/VIDEO_ID_2" frameborder="0" allowfullscreen></iframe>
+                    <iframe src="https://www.youtube.com/embed/qZgjVAHpVMc" frameborder="0" allowfullscreen></iframe>
                     <div class="overlay">
                         <h2>Product Title 4</h2>
                         <p>Description of Product 4</p>
@@ -153,16 +175,16 @@
             <!-- Thumbnail Navigation -->
             <div class="thumbnail-container" id="thumbnailContainer">
                 <div class="thumbnail active-thumbnail">
-                    <img src="image1.jpg" alt="Thumbnail 1">
+                    <img src="1.jpg" alt="Thumbnail 1">
                 </div>
                 <div class="thumbnail">
-                    <img src="image1.jpg" alt="Thumbnail 1">
+                    <img src="2.jpg" alt="Thumbnail 1">
                 </div>
                 <div class="thumbnail">
-                    <img src="image2.jpg" alt="Thumbnail 2">
+                    <img src="3.jpg" alt="Thumbnail 2">
                 </div>
                 <div class="thumbnail">
-                    <img src="image1.jpg" alt="Thumbnail 1">
+                    <img src="4.jpg" alt="Thumbnail 1">
                 </div>
             </div>
         </div>
@@ -183,8 +205,10 @@
             for (let i = 0; i < slides.length; i++) {
                 slides[i].classList.remove('active-slide');
                 thumbnails[i].classList.remove('active-thumbnail');
+                slides[i].classList.add('hide-slide');
             }
             slides[currentIndex].classList.add('active-slide');
+            slides[currentIndex].classList.remove('hide-slide');
             thumbnails[currentIndex].classList.add('active-thumbnail');
         }
 
