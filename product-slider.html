@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+    body {
+        background-color: white;
+        /* Ensure the iframe has a white background */
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+    }
+
+    .product-slider-container {
+        width: 100%;
+        position: relative;
+    }
+
+    .product-slider {
+        display: flex;
+        overflow-x: hidden;
+        transition: transform 0.5s ease-in-out;
+    }
+
+    .slide {
+        min-width: 100%;
+        box-sizing: border-box;
+        position: relative;
+    }
+
+    .slide img,
+    .slide iframe {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        color: white;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+    }
+
+    .slide:hover .overlay {
+        opacity: 1;
+    }
+
+    .thumbnail-container {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 20px;
+    }
+
+    .thumbnail {
+        width: 80px;
+        cursor: pointer;
+        position: relative;
+    }
+
+    .thumbnail img,
+    .thumbnail iframe {
+        width: 100%;
+        height: auto;
+    }
+
+    .active-slide .overlay,
+    .active-thumbnail {
+        background-color: #ff6347;
+        /* Tomato color */
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .product-slider-container {
+            width: 95%;
+            margin: auto;
+        }
+
+        .thumbnail {
+            width: 100px;
+        }
+    }
+    </style>
+</head>
+
+<body>
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Product Slider</title>
+        <link rel="stylesheet" href="slider.css">
+    </head>
+
+    <body>
+        <div class="product-slider-container">
+            <div class="product-slider" id="productSlider">
+                <!-- Slide 1: Image -->
+                <div class="slide active-slide">
+                    <img src="image1.jpg" alt="Product Image 1">
+                    <div class="overlay">
+                        <h2>Product Title 1</h2>
+                        <p>Description of Product 1</p>
+                    </div>
+                </div>
+                <!-- Slide 2: YouTube Video -->
+                <div class="slide">
+                    <iframe src="https://www.youtube.com/embed/VIDEO_ID_1" frameborder="0" allowfullscreen></iframe>
+                    <div class="overlay">
+                        <h2>Product Title 2</h2>
+                        <p>Description of Product 2</p>
+                    </div>
+                </div>
+                <!-- Slide 3: Image -->
+                <div class="slide">
+                    <img src="image2.jpg" alt="Product Image 2">
+                    <div class="overlay">
+                        <h2>Product Title 3</h2>
+                        <p>Description of Product 3</p>
+                    </div>
+                </div>
+                <!-- Slide 4: YouTube Video -->
+                <div class="slide">
+                    <iframe src="https://www.youtube.com/embed/VIDEO_ID_2" frameborder="0" allowfullscreen></iframe>
+                    <div class="overlay">
+                        <h2>Product Title 4</h2>
+                        <p>Description of Product 4</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Thumbnail Navigation -->
+            <div class="thumbnail-container" id="thumbnailContainer">
+                <div class="thumbnail active-thumbnail">
+                    <img src="image1.jpg" alt="Thumbnail 1">
+                </div>
+                <div class="thumbnail">
+                    <img src="image1.jpg" alt="Thumbnail 1">
+                </div>
+                <div class="thumbnail">
+                    <img src="image2.jpg" alt="Thumbnail 2">
+                </div>
+                <div class="thumbnail">
+                    <img src="image1.jpg" alt="Thumbnail 1">
+                </div>
+            </div>
+        </div>
+        <script src="slider.js"></script>
+    </body>
+
+    </html>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const slider = document.getElementById('productSlider');
+        const slides = slider.children;
+        const thumbnailContainer = document.getElementById('thumbnailContainer');
+        const thumbnails = thumbnailContainer.children;
+
+        let currentIndex = 0;
+
+        function updateSlides() {
+            for (let i = 0; i < slides.length; i++) {
+                slides[i].classList.remove('active-slide');
+                thumbnails[i].classList.remove('active-thumbnail');
+            }
+            slides[currentIndex].classList.add('active-slide');
+            thumbnails[currentIndex].classList.add('active-thumbnail');
+        }
+
+        function nextSlide() {
+            currentIndex = (currentIndex + 1) % slides.length;
+            updateSlides();
+        }
+
+        function prevSlide() {
+            currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+            updateSlides();
+        }
+
+        function initSlider() {
+            updateSlides();
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight') nextSlide();
+                else if (e.key === 'ArrowLeft') prevSlide();
+            });
+
+            thumbnailContainer.addEventListener('click', function(e) {
+                const clickedIndex = Array.from(thumbnails).indexOf(e.target);
+                if (clickedIndex !== -1) {
+                    currentIndex = clickedIndex;
+                    updateSlides();
+                }
+            });
+        }
+
+        initSlider();
+
+        // Swipe support on mobile devices
+        let touchStartX = 0;
+
+        slider.addEventListener('touchstart', function(e) {
+            touchStartX = e.touches[0].clientX;
+        });
+
+        slider.addEventListener('touchend', function(e) {
+            const touchEndX = e.changedTouches[0].clientX;
+            const diffX = touchEndX - touchStartX;
+
+            if (diffX > 50) prevSlide();
+            else if (diffX < -50) nextSlide();
+        });
+    });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+    }
+
+    .product-carousel-container {
+        width: 100%;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .product-carousel {
+        display: flex;
+        transition: transform 0.5s ease-in-out;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        /* Enable smooth scrolling on iOS */
+    }
+
+    .slide {
+        min-width: calc(25% - 10px);
+        /* Adjust based on the number of slides you want to show together */
+        box-sizing: border-box;
+        position: relative;
+        scroll-snap-align: start;
+        /*display: flex;*/
+        justify-content: center;
+        align-items: center;
+    }
+
+    .slide img,
+    .slide iframe {
+        width: 80%;
+        height: auto;
+        display: block;
+        transition: opacity 0.5s ease-in-out;
+        /* Add a transition for smooth fading */
+    }
+
+    .overlay {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.5);
+        color: white;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+    }
+
+    .slide:hover .overlay {
+        opacity: 1;
+    }
+
+    .active-slide img,
+    .active-slide iframe {
+        opacity: 1;
+        /* Ensure the image is fully visible */
+    }
+
+    .slide.active-slide {
+        display: flex !important;
+    }
+    .slide.hide-slide {
+        display: none !important;
+    }
+    </style>
+</head>
+
+<body>
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Product Carousel</title>
+        <link rel="stylesheet" href="carousel.css">
+    </head>
+
+    <body>
+        <div class="product-carousel-container">
+            <div class="product-carousel" id="productCarousel">
+                <!-- Slide 1: Image -->
+                <div class="slide">
+                    <img src="1.jpg" alt="Product Image 1">
+                    <div class="overlay">
+                        <h2>Product Title 1</h2>
+                        <p>Description of Product 1</p>
+                    </div>
+                </div>
+                <!-- Slide 2: YouTube Video -->
+                <div class="slide">
+                    <img src="2.jpg" alt="Product Image 1">
+                    <div class="overlay">
+                        <h2>Product Title 2</h2>
+                        <p>Description of Product 2</p>
+                    </div>
+                </div>
+                <!-- Slide 3: Image -->
+                <div class="slide">
+                    <img src="3.jpg" alt="Product Image 2">
+                    <div class="overlay">
+                        <h2>Product Title 3</h2>
+                        <p>Description of Product 3</p>
+                    </div>
+                </div>
+                <!-- Slide 4: YouTube Video -->
+                <div class="slide">
+                    <img src="4.jpg" alt="Product Image 1">
+                    <div class="overlay">
+                        <h2>Product Title 4</h2>
+                        <p>Description of Product 4</p>
+                    </div>
+                </div>
+                <!-- Duplicate Slides for Infinite Scrolling -->
+                <div class="slide">
+                    <img src="5.jpg" alt="Product Image 1 (Duplicate)">
+                    <div class="overlay">
+                        <h2>Product Title 1 (Duplicate)</h2>
+                        <p>Description of Product 1</p>
+                    </div>
+                </div>
+                <!-- Slide 2: YouTube Video -->
+                <div class="slide">
+                    <img src="1.jpg" alt="Product Image 1">
+                    <div class="overlay">
+                        <h2>Product Title 2 (Duplicate)</h2>
+                        <p>Description of Product 2</p>
+                    </div>
+                </div>
+                <!-- Slide 3: Image -->
+                <div class="slide">
+                    <img src="2.jpg" alt="Product Image 2 (Duplicate)">
+                    <div class="overlay">
+                        <h2>Product Title 3 (Duplicate)</h2>
+                        <p>Description of Product 3</p>
+                    </div>
+                </div>
+                <!-- Slide 4: YouTube Video -->
+                <div class="slide">
+                    <img src="3.jpg" alt="Product Image 1">
+                    <div class="overlay">
+                        <h2>Product Title 4 (Duplicate)</h2>
+                        <p>Description of Product 4</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="carousel.js"></script>
+    </body>
+
+    </html>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const carousel = document.getElementById('productCarousel');
+        const slides = carousel.children;
+        let currentIndex = 0;
+
+        function updateSlides() {
+            for (let i = 0; i < slides.length; i++) {
+                slides[i].classList.remove('active-slide');
+                slides[i].classList.add('hide-slide');
+            }
+            for (let i = 0; i < Math.min(4, slides.length); i++) { // Adjust based on the number of slides you want to show together
+                slides[(currentIndex + i) % slides.length].classList.add('active-slide');
+                slides[(currentIndex + i) % slides.length].classList.remove('hide-slide');
+            }
+        }
+
+        function nextSlide() {
+            currentIndex++;
+            updateSlides();
+        }
+
+        function prevSlide() {
+            currentIndex--;
+            updateSlides();
+        }
+
+        function initCarousel() {
+            updateSlides();
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight') nextSlide();
+                else if (e.key === 'ArrowLeft') prevSlide();
+            });
+
+            carousel.addEventListener('touchstart', function(e) {
+                touchStartX = e.touches[0].clientX;
+            });
+
+            carousel.addEventListener('touchend', function(e) {
+                const touchEndX = e.changedTouches[0].clientX;
+                const diffX = touchEndX - touchStartX;
+
+                if (diffX > 50) prevSlide();
+                else if (diffX < -50) nextSlide();
+            });
+        }
+
+        initCarousel();
+
+        // Smooth Scrolling for Infinite Scrolling
+        carousel.addEventListener('scroll', () => {
+            const scrollPosition = carousel.scrollLeft;
+            const slideWidth = slides[0].offsetWidth;
+            currentIndex = Math.floor(scrollPosition / (slideWidth * 4)); // Adjust based on the number of slides you want to show together
+
+            if (currentIndex < 0) {
+                carousel.style.transition = 'none';
+                carousel.scrollLeft += slides.length * slideWidth;
+                currentIndex = slides.length - 1;
+                setTimeout(() => {
+                    carousel.style.transition = 'transform 0.5s ease-in-out';
+                }, 0);
+            } else if (currentIndex >= slides.length) {
+                carousel.style.transition = 'none';
+                carousel.scrollLeft -= slides.length * slideWidth;
+                currentIndex = 0;
+                setTimeout(() => {
+                    carousel.style.transition = 'transform 0.5s ease-in-out';
+                }, 0);
+            }
+        });
+    });
+    </script>
+</body>
+
+</html>
