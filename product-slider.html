@@ -67,14 +67,20 @@
 
     .thumbnail-container {
         display: flex;
-        justify-content: space-around;
+        justify-content: center;
         margin-top: 20px;
+        overflow-x: hidden;
+        position: relative;
+        width: 100%;
     }
 
     .thumbnail {
-        width: 80px;
+        min-width: 80px;
+        max-width: 80px;
+        margin: 0 5px;
         cursor: pointer;
         position: relative;
+        transition: transform 0.3s ease;
     }
 
     .thumbnail img,
@@ -115,6 +121,11 @@
         0% { opacity: 0.7; transform: translateX(20px); }
         100% { opacity: 1; transform: translateX(0); }
     }
+    
+    @keyframes slideRightAnimation {
+        0% { opacity: 0.7; transform: translateX(-20px); }
+        100% { opacity: 1; transform: translateX(0); }
+    }
     /* Responsive Design */
     @media (max-width: 768px) {
         .product-slider-container {
@@ -123,7 +134,15 @@
         }
 
         .thumbnail {
-            width: 100px;
+            min-width: 60px;
+            max-width: 60px;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .thumbnail {
+            min-width: 50px;
+            max-width: 50px;
         }
     }
     </style>
@@ -215,7 +234,48 @@
         const thumbnails = thumbnailContainer.children;
 
         let currentIndex = 0;
+        let visibleThumbnails = 3; // Default number of visible thumbnails
+        let thumbnailScrollPosition = 0;
 
+        // Update the number of visible thumbnails based on screen width
+        function updateVisibleThumbnails() {
+            const width = window.innerWidth;
+            if (width >= 1000) {
+                visibleThumbnails = 5;
+            } else if (width >= 768) {
+                visibleThumbnails = 4;
+            } else if (width >= 480) {
+                visibleThumbnails = 4;
+            } else {
+                visibleThumbnails = 4;
+            }
+        }
+        
+        // Update thumbnail container scroll position
+        function updateThumbnailScroll() {
+            // Calculate the center position
+            const halfVisible = Math.floor(visibleThumbnails / 2);
+            let targetScrollPosition = currentIndex - halfVisible;
+            
+            // Ensure we don't scroll past the beginning
+            targetScrollPosition = Math.max(0, targetScrollPosition);
+            
+            // Ensure we don't scroll past the end
+            targetScrollPosition = Math.min(thumbnails.length - visibleThumbnails, targetScrollPosition);
+            
+            // Apply the scroll position
+            thumbnailScrollPosition = targetScrollPosition;
+            
+            // Update the visual position of thumbnails
+            for (let i = 0; i < thumbnails.length; i++) {
+                if (i >= thumbnailScrollPosition && i < thumbnailScrollPosition + visibleThumbnails) {
+                    thumbnails[i].style.display = 'block';
+                } else {
+                    thumbnails[i].style.display = 'none';
+                }
+            }
+        }
+        
         function updateSlides() {
             for (let i = 0; i < slides.length; i++) {
                 slides[i].classList.remove('active-slide');
@@ -225,21 +285,50 @@
             slides[currentIndex].classList.add('active-slide');
             slides[currentIndex].classList.remove('hide-slide');
             thumbnails[currentIndex].classList.add('active-thumbnail');
+            
+            // Update thumbnail scroll position
+            updateThumbnailScroll();
         }
 
         function nextSlide() {
             currentIndex = (currentIndex + 1) % slides.length;
             updateSlides();
+            animateSlide('left'); // Slide to the left to show next
         }
 
         function prevSlide() {
             currentIndex = (currentIndex - 1 + slides.length) % slides.length;
             updateSlides();
+            animateSlide('right'); // Slide to the right to show previous
+        }
+        
+        function animateSlide(direction) {
+            const activeSlide = document.querySelector('.active-slide');
+            if (activeSlide) {
+                activeSlide.classList.remove('slide-animation');
+                void activeSlide.offsetWidth; // Trigger reflow
+                activeSlide.classList.add('slide-animation');
+                
+                // Adjust animation direction based on which way we're sliding
+                if (direction === 'left') {
+                    activeSlide.style.animation = 'slideAnimation 0.5s ease-in-out';
+                } else {
+                    activeSlide.style.animation = 'slideRightAnimation 0.5s ease-in-out';
+                }
+            }
         }
 
         function initSlider() {
+            // Initialize responsive thumbnail display
+            updateVisibleThumbnails();
             updateSlides();
 
+            // Add window resize listener for responsive behavior
+            window.addEventListener('resize', function() {
+                updateVisibleThumbnails();
+                updateThumbnailScroll();
+            });
+            
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'ArrowRight') nextSlide();
                 else if (e.key === 'ArrowLeft') prevSlide();
@@ -248,8 +337,11 @@
             // Add click event listeners to each thumbnail
             for (let i = 0; i < thumbnails.length; i++) {
                 thumbnails[i].addEventListener('click', function() {
+                    // Determine direction based on which thumbnail was clicked
+                    const direction = i > currentIndex ? 'left' : 'right';
                     currentIndex = i;
                     updateSlides();
+                    animateSlide(direction);
                 });
             }
         }
