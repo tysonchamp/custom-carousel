@@ -195,7 +195,9 @@
                 large: 4,
                 medium: 2,
                 small: 1
-            }
+            },
+            autoScroll: true,  // Enable/disable auto scrolling
+            autoScrollInterval: 3000  // Time between slides in milliseconds
         };
 
         // Function to determine how many slides to show based on screen width
@@ -264,9 +266,32 @@
             });
         }
 
+        // Auto scroll interval reference
+        let autoScrollInterval;
+        
+        // Start auto scrolling if enabled in config
+        function startAutoScroll() {
+            if (carouselConfig.autoScroll) {
+                stopAutoScroll(); // Clear any existing interval
+                autoScrollInterval = setInterval(() => {
+                    nextSlide();
+                }, carouselConfig.autoScrollInterval);
+            }
+        }
+        
+        // Stop auto scrolling
+        function stopAutoScroll() {
+            if (autoScrollInterval) {
+                clearInterval(autoScrollInterval);
+            }
+        }
+        
         function initCarousel() {
             updateSlideWidths();
             updateSlides();
+            
+            // Start auto scroll if enabled
+            startAutoScroll();
 
             // Add resize event listener for responsiveness
             window.addEventListener('resize', function() {
@@ -278,9 +303,14 @@
                 if (e.key === 'ArrowRight') nextSlide();
                 else if (e.key === 'ArrowLeft') prevSlide();
             });
+            
+            // Pause auto scroll on hover
+            carousel.addEventListener('mouseenter', stopAutoScroll);
+            carousel.addEventListener('mouseleave', startAutoScroll);
 
             carousel.addEventListener('touchstart', function(e) {
                 touchStartX = e.touches[0].clientX;
+                stopAutoScroll(); // Pause auto scroll on touch
             });
 
             carousel.addEventListener('touchend', function(e) {
@@ -289,6 +319,8 @@
 
                 if (diffX > 50) prevSlide();
                 else if (diffX < -50) nextSlide();
+                
+                startAutoScroll(); // Resume auto scroll after touch
             });
         }
 
