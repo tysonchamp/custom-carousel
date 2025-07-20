@@ -27,6 +27,7 @@
         scroll-snap-type: x mandatory;
         -webkit-overflow-scrolling: touch;
         /* Enable smooth scrolling on iOS */
+        position: relative;
     }
 
     .slide {
@@ -76,9 +77,19 @@
 
     .slide.active-slide {
         display: flex !important;
+        transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
     }
     .slide.hide-slide {
         display: none !important;
+    }
+    
+    .slide-animation {
+        animation: slideAnimation 0.5s ease-in-out;
+    }
+    
+    @keyframes slideAnimation {
+        0% { opacity: 0.7; transform: translateX(20px); }
+        100% { opacity: 1; transform: translateX(0); }
     }
     </style>
 </head>
@@ -228,11 +239,29 @@
         function nextSlide() {
             currentIndex++;
             updateSlides();
+            animateSlides('next');
         }
 
         function prevSlide() {
             currentIndex--;
             updateSlides();
+            animateSlides('prev');
+        }
+        
+        function animateSlides(direction) {
+            // Get all active slides
+            const activeSlides = document.querySelectorAll('.active-slide');
+            
+            // Remove any existing animation classes
+            activeSlides.forEach(slide => {
+                slide.classList.remove('slide-animation');
+                
+                // Trigger reflow to restart animation
+                void slide.offsetWidth;
+                
+                // Add animation class
+                slide.classList.add('slide-animation');
+            });
         }
 
         function initCarousel() {
