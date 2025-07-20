@@ -181,8 +181,28 @@
     <script>
     document.addEventListener("DOMContentLoaded", function() {
         const carousel = document.getElementById('productCarousel');
-        const slides = carousel.children;
+        const originalSlides = Array.from(carousel.children);
         let currentIndex = 0;
+        
+        // Clone first slides and append to the end for smooth looping
+        function setupInfiniteCarousel() {
+            // Get the number of slides to show based on current screen size
+            const slidesToShow = getSlidesToShow();
+            
+            // Remove any previously cloned slides
+            const existingClones = document.querySelectorAll('.slide-clone');
+            existingClones.forEach(clone => clone.remove());
+            
+            // Clone the first few slides and append them to the end
+            for (let i = 0; i < slidesToShow; i++) {
+                const clone = originalSlides[i].cloneNode(true);
+                clone.classList.add('slide-clone');
+                carousel.appendChild(clone);
+            }
+        }
+        
+        // Get all slides including clones
+        const slides = () => carousel.children;
         
         // Configuration object for responsive behavior
         const carouselConfig = {
@@ -219,33 +239,44 @@
             const slidesToShow = getSlidesToShow();
             const slideWidth = 100 / slidesToShow;
             
-            for (let i = 0; i < slides.length; i++) {
-                slides[i].style.minWidth = `calc(${slideWidth}% - 10px)`;
+            const allSlides = slides();
+            for (let i = 0; i < allSlides.length; i++) {
+                allSlides[i].style.minWidth = `calc(${slideWidth}% - 10px)`;
             }
         }
         
         function updateSlides() {
             const slidesToShow = getSlidesToShow();
+            const allSlides = slides();
             
-            for (let i = 0; i < slides.length; i++) {
-                slides[i].classList.remove('active-slide');
-                slides[i].classList.add('hide-slide');
+            for (let i = 0; i < allSlides.length; i++) {
+                allSlides[i].classList.remove('active-slide');
+                allSlides[i].classList.add('hide-slide');
             }
             
-            for (let i = 0; i < Math.min(slidesToShow, slides.length); i++) {
-                slides[(currentIndex + i) % slides.length].classList.add('active-slide');
-                slides[(currentIndex + i) % slides.length].classList.remove('hide-slide');
+            for (let i = 0; i < Math.min(slidesToShow, allSlides.length); i++) {
+                allSlides[(currentIndex + i) % allSlides.length].classList.add('active-slide');
+                allSlides[(currentIndex + i) % allSlides.length].classList.remove('hide-slide');
             }
         }
 
         function nextSlide() {
             currentIndex++;
+            const allSlides = slides();
+            // Handle wrapping around to the first slide
+            if (currentIndex >= originalSlides.length) {
+                currentIndex = 0;
+            }
             updateSlides();
             animateSlides('next');
         }
 
         function prevSlide() {
             currentIndex--;
+            // Handle wrapping around to the last slide
+            if (currentIndex < 0) {
+                currentIndex = originalSlides.length - 1;
+            }
             updateSlides();
             animateSlides('prev');
         }
@@ -287,6 +318,9 @@
         }
         
         function initCarousel() {
+            // Setup infinite carousel by cloning slides
+            setupInfiniteCarousel();
+            
             updateSlideWidths();
             updateSlides();
             
@@ -295,6 +329,7 @@
 
             // Add resize event listener for responsiveness
             window.addEventListener('resize', function() {
+                setupInfiniteCarousel(); // Re-setup clones when screen size changes
                 updateSlideWidths();
                 updateSlides();
             });
@@ -329,24 +364,29 @@
         // Smooth Scrolling for Infinite Scrolling
         carousel.addEventListener('scroll', () => {
             const scrollPosition = carousel.scrollLeft;
-            const slideWidth = slides[0].offsetWidth;
+            const allSlides = slides();
+            const slideWidth = allSlides[0].offsetWidth;
             const slidesToShow = getSlidesToShow();
             currentIndex = Math.floor(scrollPosition / (slideWidth * slidesToShow));
 
             if (currentIndex < 0) {
                 carousel.style.transition = 'none';
-                carousel.scrollLeft += slides.length * slideWidth;
-                currentIndex = slides.length - 1;
+                carousel.scrollLeft += originalSlides.length * slideWidth;
+                currentIndex = originalSlides.length - 1;
                 setTimeout(() => {
                     carousel.style.transition = 'transform 0.5s ease-in-out';
                 }, 0);
-            } else if (currentIndex >= slides.length) {
-                carousel.style.transition = 'none';
-                carousel.scrollLeft -= slides.length * slideWidth;
-                currentIndex = 0;
-                setTimeout(() => {
-                    carousel.style.transition = 'transform 0.5s ease-in-out';
-                }, 0);
+            } else if (currentIndex >= originalSlides.length) {
+                // Don't reset to beginning immediately - let it show the cloned slides
+                // which are the first slides duplicated at the end
+                if (currentIndex >= allSlides.length) {
+                    carousel.style.transition = 'none';
+                    carousel.scrollLeft -= originalSlides.length * slideWidth;
+                    currentIndex = 0;
+                    setTimeout(() => {
+                        carousel.style.transition = 'transform 0.5s ease-in-out';
+                    }, 0);
+                }
             }
         });
     });
