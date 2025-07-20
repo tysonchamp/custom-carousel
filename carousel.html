@@ -31,7 +31,7 @@
 
     .slide {
         min-width: calc(25% - 10px);
-        /* Adjust based on the number of slides you want to show together */
+        /* Width will be controlled by JavaScript based on screen size */
         box-sizing: border-box;
         position: relative;
         scroll-snap-align: start;
@@ -172,13 +172,54 @@
         const carousel = document.getElementById('productCarousel');
         const slides = carousel.children;
         let currentIndex = 0;
+        
+        // Configuration object for responsive behavior
+        const carouselConfig = {
+            breakpoints: {
+                large: 1000,  // Show 4 slides when width >= 1000px
+                medium: 780,   // Show 2 slides when width >= 780px and < 1000px
+                small: 480     // Show 1 slide when width < 480px
+            },
+            slidesToShow: {
+                large: 4,
+                medium: 2,
+                small: 1
+            }
+        };
 
+        // Function to determine how many slides to show based on screen width
+        function getSlidesToShow() {
+            const width = window.innerWidth;
+            if (width >= carouselConfig.breakpoints.large) {
+                return carouselConfig.slidesToShow.large;
+            } else if (width >= carouselConfig.breakpoints.medium) {
+                return carouselConfig.slidesToShow.medium;
+            } else if (width >= carouselConfig.breakpoints.small) {
+                return carouselConfig.slidesToShow.medium; // Show 2 slides
+            } else {
+                return carouselConfig.slidesToShow.small; // Show 1 slide
+            }
+        }
+        
+        // Update slide widths based on how many to show
+        function updateSlideWidths() {
+            const slidesToShow = getSlidesToShow();
+            const slideWidth = 100 / slidesToShow;
+            
+            for (let i = 0; i < slides.length; i++) {
+                slides[i].style.minWidth = `calc(${slideWidth}% - 10px)`;
+            }
+        }
+        
         function updateSlides() {
+            const slidesToShow = getSlidesToShow();
+            
             for (let i = 0; i < slides.length; i++) {
                 slides[i].classList.remove('active-slide');
                 slides[i].classList.add('hide-slide');
             }
-            for (let i = 0; i < Math.min(4, slides.length); i++) { // Adjust based on the number of slides you want to show together
+            
+            for (let i = 0; i < Math.min(slidesToShow, slides.length); i++) {
                 slides[(currentIndex + i) % slides.length].classList.add('active-slide');
                 slides[(currentIndex + i) % slides.length].classList.remove('hide-slide');
             }
@@ -195,8 +236,15 @@
         }
 
         function initCarousel() {
+            updateSlideWidths();
             updateSlides();
 
+            // Add resize event listener for responsiveness
+            window.addEventListener('resize', function() {
+                updateSlideWidths();
+                updateSlides();
+            });
+            
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'ArrowRight') nextSlide();
                 else if (e.key === 'ArrowLeft') prevSlide();
@@ -221,7 +269,8 @@
         carousel.addEventListener('scroll', () => {
             const scrollPosition = carousel.scrollLeft;
             const slideWidth = slides[0].offsetWidth;
-            currentIndex = Math.floor(scrollPosition / (slideWidth * 4)); // Adjust based on the number of slides you want to show together
+            const slidesToShow = getSlidesToShow();
+            currentIndex = Math.floor(scrollPosition / (slideWidth * slidesToShow));
 
             if (currentIndex < 0) {
                 carousel.style.transition = 'none';
