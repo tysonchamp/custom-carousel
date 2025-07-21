@@ -172,13 +172,17 @@ class ProductCarousel {
         
         // Remove any existing animation classes
         activeSlides.forEach(slide => {
-            slide.classList.remove('slide-animation');
+            slide.classList.remove('slide-animation-next', 'slide-animation-prev');
             
             // Trigger reflow to restart animation
             void slide.offsetWidth;
             
-            // Add animation class
-            slide.classList.add('slide-animation');
+            // Add animation class based on direction
+            if (direction === 'next') {
+                slide.classList.add('slide-animation-next');
+            } else {
+                slide.classList.add('slide-animation-prev');
+            }
         });
     }
     
