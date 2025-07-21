@@ -17,7 +17,8 @@
     box-sizing: border-box;
     position: relative;
     margin: 0 5px;
-    transition: transform 0.5s ease-in-out;
+    transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+    opacity: 1;
 }
 
 .slide img,
@@ -65,7 +66,11 @@
 }
 
 .slide.hide-slide {
-    display: none !important;
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    position: absolute;
+    z-index: -1;
 }
 
 .slide-animation-next {
