@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Carousel Demo</title>
+    <link rel="stylesheet" href="carousel.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        h1, h2 {
+            color: #333;
+        }
+        
+        .demo-section {
+            margin-bottom: 40px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        pre {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        
+        code {
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Product Carousel Demo</h1>
+    
+    <div class="demo-section">
+        <h2>Basic Usage</h2>
+        <p>The simplest way to use the carousel with default settings:</p>
+        
+        <pre><code>&lt;div class="product-carousel-container" id="basicCarousel" data-carousel&gt;
+    &lt;div class="product-carousel"&gt;
+        &lt;!-- Slides go here --&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+        
+        <div class="product-carousel-container" id="basicCarousel" data-carousel>
+            <div class="product-carousel">
+                <div class="slide">
+                    <img src="https://picsum.photos/200/300?random=1" alt="Product Image 1">
+                    <div class="overlay">
+                        <h2>Product Title 1</h2>
+                        <p>Description of Product 1</p>
+                    </div>
+                </div>
+                <div class="slide">
+                    <img src="https://picsum.photos/200/300?random=2" alt="Product Image 2">
+                    <div class="overlay">
+                        <h2>Product Title 2</h2>
+                        <p>Description of Product 2</p>
+                    </div>
+                </div>
+                <div class="slide">
+                    <img src="https://picsum.photos/200/300?random=3" alt="Product Image 3">
+                    <div class="overlay">
+                        <h2>Product Title 3</h2>
+                        <p>Description of Product 3</p>
+                    </div>
+                </div>
+                <div class="slide">
+                    <img src="https://picsum.photos/200/300?random=4" alt="Product Image 4">
+                    <div class="overlay">
+                        <h2>Product Title 4</h2>
+                        <p>Description of Product 4</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="demo-section">
+        <h2>Disable Auto-Scroll</h2>
+        <p>You can disable auto-scrolling with the data-auto-scroll attribute:</p>
+        
+        <pre><code>&lt;div class="product-carousel-container" id="noAutoScrollCarousel" data-carousel data-auto-scroll="false"&gt;
+    &lt;div class="product-carousel"&gt;
+        &lt;!-- Slides go here --&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+        
+        <div class="product-carousel-container" id="noAutoScrollCarousel" data-carousel data-auto-scroll="false">
+            <div class="product-carousel">
+                <div class="slide">
+                    <img src="https://picsum.photos/200/300?random=5" alt="Product Image 5">
+                    <div class="overlay">
+                        <h2>Product Title 5</h2>
+                        <p>Description of Product 5</p>
+                    </div>
+                </div>
+                <div class="slide">
+                    <img src="https://picsum.photos/200/300?random=6" alt="Product Image 6">
+                    <div class="overlay">
+                        <h2>Product Title 6</h2>
+                        <p>Description of Product 6</p>
+                    </div>
+                </div>
+                <div class="slide">
+                    <img src="https://picsum.photos/200/300?random=7" alt="Product Image 7">
+                    <div class="overlay">
+                        <h2>Product Title 7</h2>
+                        <p>Description of Product 7</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="demo-section">
+        <h2>Custom Interval</h2>
+        <p>You can set a custom auto-scroll interval (in milliseconds):</p>
+        
+        <pre><code>&lt;div class="product-carousel-container" id="fastCarousel" data-carousel data-interval="1000"&gt;
+    &lt;div class="product-carousel"&gt;
+        &lt;!-- Slides go here --&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+        
+        <div class="product-carousel-container" id="fastCarousel" data-carousel data-interval="1000">
+            <div class="product-carousel">
+                <div class="slide">
+                    <img src="https://picsum.photos/200/300?random=8" alt="Product Image 8">
+                    <div class="overlay">
+                        <h2>Product Title 8</h2>
+                        <p>Description of Product 8</p>
+                    </div>
+                </div>
+                <div class="slide">
+                    <img src="https://picsum.photos/200/300?random=9" alt="Product Image 9">
+                    <div class="overlay">
+                        <h2>Product Title 9</h2>
+                        <p>Description of Product 9</p>
+                    </div>
+                </div>
+                <div class="slide">
+                    <img src="https://picsum.photos/200/300?random=10" alt="Product Image 10">
+                    <div class="overlay">
+                        <h2>Product Title 10</h2>
+                        <p>Description of Product 10</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="demo-section">
+        <h2>Advanced Usage</h2>
+        <p>For more advanced customization, you can create a carousel instance manually:</p>
+        
+        <pre><code>// HTML
+&lt;div class="product-carousel-container" id="advancedCarousel"&gt;
+    &lt;div class="product-carousel"&gt;
+        &lt;!-- Slides go here --&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+// JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+    const advancedCarousel = new ProductCarousel('advancedCarousel', {
+        autoScroll: true,
+        autoScrollInterval: 5000,
+        breakpoints: {
+            large: 1200,
+            medium: 800,
+            small: 500
+        },
+        slidesToShow: {
+            large: 3,
+            medium: 2,
+            small: 1
+        }
+    });
+});</code></pre>
+        
+        <div class="product-carousel-container" id="advancedCarousel">
+            <div class="product-carousel">
+                <div class="slide">
+                    <img src="https://picsum.photos/200/300?random=11" alt="Product Image 11">
+                    <div class="overlay">
+                        <h2>Product Title 11</h2>
+                        <p>Description of Product 11</p>
+                    </div>
+                </div>
+                <div class="slide">
+                    <img src="https://picsum.photos/200/300?random=12" alt="Product Image 12">
+                    <div class="overlay">
+                        <h2>Product Title 12</h2>
+                        <p>Description of Product 12</p>
+                    </div>
+                </div>
+                <div class="slide">
+                    <img src="https://picsum.photos/200/300?random=13" alt="Product Image 13">
+                    <div class="overlay">
+                        <h2>Product Title 13</h2>
+                        <p>Description of Product 13</p>
+                    </div>
+                </div>
+                <div class="slide">
+                    <img src="https://picsum.photos/200/300?random=14" alt="Product Image 14">
+                    <div class="overlay">
+                        <h2>Product Title 14</h2>
+                        <p>Description of Product 14</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="carousel.js"></script>
+    <script>
+        // Initialize the advanced carousel manually
+        document.addEventListener('DOMContentLoaded', function() {
+            const advancedCarousel = new ProductCarousel('advancedCarousel', {
+                autoScroll: true,
+                autoScrollInterval: 5000,
+                breakpoints: {
+                    large: 1200,
+                    medium: 800,
+                    small: 500
+                },
+                slidesToShow: {
+                    large: 3,
+                    medium: 2,
+                    small: 1
+                }
+            });
+        });
+    </script>
+</body>
+</html>
